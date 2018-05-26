@@ -51,7 +51,6 @@ public abstract class Column {
 		}else {
 			this.rawData = rawData;
 		}
-		this.rawData = rawData;
 	}
 
 	protected void setByteSize(int byteSize) {
