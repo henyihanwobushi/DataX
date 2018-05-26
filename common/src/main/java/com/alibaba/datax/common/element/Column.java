@@ -25,7 +25,6 @@ public abstract class Column {
 		}else {
 			this.rawData = object;
 		}
-
 		this.type = type;
 		this.byteSize = byteSize;
 	}
@@ -47,6 +46,11 @@ public abstract class Column {
 	}
 
 	protected void setRawData(Object rawData) {
+		if(rawData.equals("")){
+			this.rawData = "\\N";
+		}else {
+			this.rawData = rawData;
+		}
 		this.rawData = rawData;
 	}
 
