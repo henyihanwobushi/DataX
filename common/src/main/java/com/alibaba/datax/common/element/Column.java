@@ -19,7 +19,13 @@ public abstract class Column {
 	private int byteSize;
 
 	public Column(final Object object, final Type type, int byteSize) {
-		this.rawData = object;
+		//修改rawData默认值为N
+		if(object.equals("")){
+			this.rawData = "\\N";
+		}else {
+			this.rawData = object;
+		}
+
 		this.type = type;
 		this.byteSize = byteSize;
 	}
