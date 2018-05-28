@@ -3,7 +3,7 @@ package com.alibaba.datax.common.element;
 import com.alibaba.datax.common.util.Configuration;
 import com.alibaba.datax.common.util.DefaultKeys;
 import com.alibaba.fastjson.JSON;
-import com.alibaba.datax.core.util.container.*;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
