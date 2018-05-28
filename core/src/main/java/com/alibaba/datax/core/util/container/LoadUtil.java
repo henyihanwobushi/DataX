@@ -6,6 +6,7 @@ import com.alibaba.datax.common.plugin.AbstractJobPlugin;
 import com.alibaba.datax.common.plugin.AbstractPlugin;
 import com.alibaba.datax.common.plugin.AbstractTaskPlugin;
 import com.alibaba.datax.common.util.Configuration;
+import com.alibaba.datax.common.util.DefaultKeys;
 import com.alibaba.datax.core.taskgroup.runner.AbstractRunner;
 import com.alibaba.datax.core.taskgroup.runner.ReaderRunner;
 import com.alibaba.datax.core.taskgroup.runner.WriterRunner;
@@ -122,6 +123,7 @@ public class LoadUtil {
             AbstractTaskPlugin taskPlugin = (AbstractTaskPlugin) clazz
                     .newInstance();
             taskPlugin.setPluginConf(getPluginConf(pluginType, pluginName));
+            DefaultKeys.Default_Null_Format=taskPlugin.getDefaultNullFormat();
             return taskPlugin;
         } catch (Exception e) {
             throw DataXException.asDataXException(FrameworkErrorCode.RUNTIME_ERROR,
