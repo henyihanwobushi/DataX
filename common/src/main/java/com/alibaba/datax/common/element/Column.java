@@ -18,12 +18,10 @@ public abstract class Column {
 	//作业的config
 	private Configuration pluginJobConf;
 	private Object rawData;
-
 	private int byteSize;
-
 	public Column(final Object object, final Type type, int byteSize) {
 		//修改rawData默认值为N
-		if(object.equals("")){
+		if(object==null||object.equals("")){
 			this.rawData = DefaultKeys.Default_Null_Format;
 		}else {
 			this.rawData = object;
