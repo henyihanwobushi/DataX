@@ -8,6 +8,7 @@ import com.alibaba.datax.common.plugin.TaskPluginCollector;
 import com.alibaba.datax.common.util.Configuration;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.facebook.presto.hadoop.$internal.org.slf4j.LoggerFactory;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.MutablePair;
@@ -30,8 +31,10 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import static com.facebook.presto.hadoop.$internal.org.slf4j.LoggerFactory.*;
+
 public class HdfsHelper {
-    public static final Logger LOG = LoggerFactory.getLogger(HdfsWriter.Job.class);
+    public static final Logger LOG = getLogger(HdfsWriter.Job.class);
     public FileSystem fileSystem = null;
     public JobConf conf = null;
     public org.apache.hadoop.conf.Configuration hadoopConf = null;
