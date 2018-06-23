@@ -4,7 +4,7 @@ import com.alibaba.datax.common.util.Configuration;
 
 public interface Pluginable {
 	String getDeveloper();
-
+    String getDefaultNullFormat();
     String getDescription();
 
     void setPluginConf(Configuration pluginConf);
