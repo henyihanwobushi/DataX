@@ -22,12 +22,6 @@ public abstract class AbstractPlugin extends BaseObject implements Pluginable {
 	}
 
     @Override
-    public String getDefaultNullFormat() {
-        assert null != this.pluginConf;
-        return this.pluginConf.getString("defaultnullformat");
-    }
-
-    @Override
 	public String getDeveloper() {
 		assert null != this.pluginConf;
 		return this.pluginConf.getString("developer");
