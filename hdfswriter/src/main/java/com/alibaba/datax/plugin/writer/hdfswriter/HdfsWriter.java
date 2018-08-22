@@ -13,6 +13,7 @@ import org.apache.hadoop.fs.Path;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.*;
 
 
@@ -149,6 +150,26 @@ public class HdfsWriter extends Writer {
 
         @Override
         public void prepare() {
+            // 检查目标文件夹的父文件夹是不是存在，不存在则创建
+            String parentPath = new Path(path).getParent().toString();
+            if (!hdfsHelper.isPathexists(path)) {
+                if (!hdfsHelper.isPathexists(parentPath)) {
+                    throw DataXException.asDataXException(HdfsWriterErrorCode.ILLEGAL_VALUE,
+                            String.format("您配置的path: [%s] 不存在, 请先在hive端创建对应的数据库和表.", path));
+                } else {
+                    try {
+                        hdfsHelper.fileSystem.mkdirs(new Path(path));
+                    } catch (IOException e) {
+                        throw DataXException.asDataXException(HdfsWriterErrorCode.WRITER_RUNTIME_EXCEPTION,
+                                String.format("您配置的path: [%s] 不存在, 在创建文件夹时失败.", path));
+                    }
+                }
+            }
+            // 如果写入模式是替换，直接返回
+            if ("replace".equalsIgnoreCase(writeMode)) {
+                LOG.info(String.format("由于您配置了writeMode replace, 会将 [%s] 文件夹删掉，并将临时数据问价夹重命名为[%s]", path, path));
+                return;
+            }
             //若路径已经存在，检查path是否是目录
             if (hdfsHelper.isPathexists(path)) {
                 if (!hdfsHelper.isPathDir(path)) {
@@ -184,8 +205,6 @@ public class HdfsWriter extends Writer {
                                 String.format("由于您配置了writeMode nonConflict,但您配置的path: [%s] 目录不为空, 下面存在其他文件或文件夹.", path));
 
                     }
-                } else {
-                    LOG.info(String.format("由于您配置了writeMode replace, 会将 [%s] 文件夹删掉，并将临时数据问价夹重命名为[%s]", path,path));
                 }
             } else {
                 throw DataXException.asDataXException(HdfsWriterErrorCode.ILLEGAL_VALUE,
@@ -195,8 +214,8 @@ public class HdfsWriter extends Writer {
 
         @Override
         public void post() {
-            if("replace".equalsIgnoreCase(writeMode)){
-                hdfsHelper.renameDir(new Path(storePath),new Path(endStorePath));
+            if ("replace".equalsIgnoreCase(writeMode)) {
+                hdfsHelper.renameDir(new Path(storePath), new Path(endStorePath));
                 return;
             }
             hdfsHelper.renameFile(tmpFiles, endFiles);
@@ -297,16 +316,15 @@ public class HdfsWriter extends Writer {
          * @return
          */
         private String buildTmpFilePath(String userPath) {
+            userPath = "/tmp" + (userPath.startsWith(String.valueOf(IOUtils.DIR_SEPARATOR)) ? "" : "/") + userPath;
             String tmpFilePath;
             boolean isEndWithSeparator = false;
             switch (IOUtils.DIR_SEPARATOR) {
                 case IOUtils.DIR_SEPARATOR_UNIX:
-                    isEndWithSeparator = userPath.endsWith(String
-                            .valueOf(IOUtils.DIR_SEPARATOR));
+                    isEndWithSeparator = userPath.endsWith(String.valueOf(IOUtils.DIR_SEPARATOR));
                     break;
                 case IOUtils.DIR_SEPARATOR_WINDOWS:
-                    isEndWithSeparator = userPath.endsWith(String
-                            .valueOf(IOUtils.DIR_SEPARATOR_WINDOWS));
+                    isEndWithSeparator = userPath.endsWith(String.valueOf(IOUtils.DIR_SEPARATOR_WINDOWS));
                     break;
                 default:
                     break;
